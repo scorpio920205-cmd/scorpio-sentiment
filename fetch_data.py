@@ -180,9 +180,9 @@ def score_naaim(value):
 
 def light_status(total_score):
     """依總分決定燈號顏色與文字提示。"""
-    if total_score >= 4:
+    if total_score >= 3:
         return {"color": "red", "label": "高度警戒", "desc": "多項恐慌指標同時觸發，留意風險"}
-    if total_score >= 1:
+    if total_score >= 2:
         return {"color": "yellow", "label": "注意前方", "desc": "恐慌指標開始累積，留意加碼機會"}
     return {"color": "green", "label": "市場平靜", "desc": "目前未見明顯恐慌訊號"}
 

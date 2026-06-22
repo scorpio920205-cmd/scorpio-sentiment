@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-22T09:52:19.538519+00:00",
+  "updated_at": "2026-06-22T09:58:52.816894+00:00",
   "total_score": 0,
   "status": {
     "color": "green",
@@ -8,7 +8,7 @@
   },
   "indicators": {
     "vix": {
-      "value": 17.5,
+      "value": 17.52,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
