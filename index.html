@@ -6,15 +6,15 @@
 <title>USA 美股情緒警示燈</title>
 <style>
   :root{
-    --bg: #0b0d10;
-    --panel: #14171c;
-    --panel-line: #232830;
-    --ink: #e8eaed;
-    --ink-dim: #8a909c;
-    --ink-faint: #565c66;
-    --green: #3ecf6e;
-    --yellow: #e8a33d;
-    --red: #e0483e;
+    --bg: #06080b;
+    --panel: #0f1217;
+    --panel-line: #1e222b;
+    --ink: #f0f2f5;
+    --ink-dim: #9ea4b0;
+    --ink-faint: #5f6573;
+    --green: #2ecc71;
+    --yellow: #f1c40f;
+    --red: #e74c3c;
     --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
     --sans: "Inter", -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
   }
@@ -23,7 +23,8 @@
 
   html, body {
     margin: 0;
-    background: var(--bg);
+    background: radial-gradient(circle at 50% 0%, #171d26 0%, #06080b 100%);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
@@ -39,7 +40,7 @@
 
   .wrap {
     width: 100%;
-    max-width: 720px;
+    max-width: 960px;
   }
 
   /* ---------- Header ---------- */
@@ -119,9 +120,9 @@
     background: #1c2025;
     transition: all 0.5s ease;
   }
-  .bulb.on.red { background: var(--red); box-shadow: 0 0 22px 4px rgba(224,72,62,0.55); }
-  .bulb.on.yellow { background: var(--yellow); box-shadow: 0 0 22px 4px rgba(232,163,61,0.55); }
-  .bulb.on.green { background: var(--green); box-shadow: 0 0 22px 4px rgba(62,207,110,0.55); }
+  .bulb.on.red { background: var(--red); box-shadow: 0 0 22px 4px rgba(231, 76, 60, 0.55); }
+  .bulb.on.yellow { background: var(--yellow); box-shadow: 0 0 22px 4px rgba(241, 196, 15, 0.55); }
+  .bulb.on.green { background: var(--green); box-shadow: 0 0 22px 4px rgba(46, 204, 113, 0.55); }
 
   /* Score ring */
   .score-ring {
@@ -168,47 +169,205 @@
     max-width: 380px;
   }
 
-  /* ---------- Indicator rows ---------- */
-  .indicators {
-    margin-top: 28px;
-  }
-  .indicator-row {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 4px;
-    border-bottom: 1px solid var(--panel-line);
-  }
-  .indicator-row:last-child { border-bottom: none; }
-
-  .ind-name { font-size: 14.5px; font-weight: 600; color: var(--ink); }
-  .ind-threshold {
-    font-family: var(--mono);
-    font-size: 11.5px;
-    color: var(--ink-faint);
-    margin-top: 3px;
-  }
-
-  .ind-value {
-    font-family: var(--mono);
-    font-size: 14px;
-    text-align: right;
-    white-space: nowrap;
-  }
-  .ind-value .val-num { color: var(--ink); font-weight: 600; }
-  .ind-value .val-num.flag { color: var(--state-color-row, var(--red)); }
-  .ind-value .val-unmet { color: var(--ink-faint); }
-
-  .ind-score {
-    font-family: var(--mono);
+  /* ---------- Indicator Grid & Cards ---------- */
+  .indicators-section-title {
+    width: 100%;
+    text-align: center;
     font-size: 15px;
-    font-weight: 700;
-    text-align: right;
-    min-width: 30px;
+    font-weight: 600;
+    color: var(--ink-dim);
+    margin-top: 36px;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+    font-family: var(--mono);
+    text-transform: uppercase;
   }
-  .ind-score.zero { color: var(--ink-faint); }
-  .ind-score.flag { color: var(--red); }
+
+  .indicator-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%;
+    margin-top: 8px;
+    align-self: stretch;
+  }
+
+  .indicator-card {
+    background: rgba(25, 28, 35, 0.65); /* translucent for glassmorphism */
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--panel-line);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 220px;
+    text-align: left;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .indicator-card:hover {
+    border-color: var(--ink-faint);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    background: rgba(25, 28, 35, 0.85);
+  }
+
+  .card-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-dim);
+    margin-bottom: 12px;
+  }
+
+  .card-value-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    height: 34px;
+  }
+
+  .card-value-num {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: var(--mono);
+    line-height: 1;
+  }
+
+  .card-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    line-height: 1.2;
+    display: inline-block;
+  }
+  .badge-green { background: rgba(62,207,110,0.12); color: var(--green); }
+  .badge-yellow { background: rgba(232,163,61,0.12); color: var(--yellow); }
+  .badge-red { background: rgba(224,72,62,0.12); color: var(--red); }
+  .badge-orange { background: rgba(232,163,61,0.12); color: var(--yellow); }
+  .badge-lightgreen { background: rgba(140,230,140,0.12); color: #8ce68c; }
+  .badge-grey { background: rgba(86,92,102,0.12); color: var(--ink-dim); }
+
+  .card-bar-container {
+    position: relative;
+    height: 6px;
+    width: 100%;
+    margin-top: 4px;
+    margin-bottom: 16px;
+    background: var(--panel-line);
+    border-radius: 3px;
+  }
+
+  .card-bar {
+    height: 100%;
+    width: 100%;
+    border-radius: 3px;
+  }
+
+  .vix-bar {
+    background: linear-gradient(to right, var(--green) 33.3%, var(--yellow) 33.3% 66.6%, var(--red) 66.6%);
+  }
+
+  .cnn-bar {
+    background: linear-gradient(to right, var(--red) 25%, var(--yellow) 25% 45%, var(--ink-faint) 45% 55%, #8ce68c 55% 75%, var(--green) 75%);
+  }
+
+  .naaim-bar {
+    background: var(--ink-faint);
+  }
+
+  .aaii-bar {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .aaii-segment-bull { background: var(--green); height: 100%; }
+  .aaii-segment-neu { background: var(--ink-faint); height: 100%; }
+  .aaii-segment-bear { background: var(--red); height: 100%; }
+
+  .bar-pin {
+    position: absolute;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    background: var(--ink);
+    border: 2px solid #000;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    z-index: 5;
+  }
+
+  .tick-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(11,13,16,0.5); /* matches --bg for high contrast boundary */
+    z-index: 2;
+  }
+
+  .aaii-threshold-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--ink);
+    opacity: 0.7;
+    z-index: 3;
+  }
+
+  .aaii-threshold-marker {
+    position: absolute;
+    top: -14px;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-family: var(--mono);
+    color: var(--ink-dim);
+    font-weight: 600;
+  }
+
+  .aaii-values {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+  .aaii-val-col {
+    display: flex;
+    flex-direction: column;
+  }
+  .aaii-val-label {
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .aaii-val-num {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--mono);
+  }
+  .aaii-val-num.bull { color: var(--green); }
+  .aaii-val-num.neu { color: var(--ink-dim); }
+  .aaii-val-num.bear { color: var(--red); }
+
+  .card-desc {
+    font-size: 11.5px;
+    color: var(--ink-dim);
+    line-height: 1.4;
+    margin-bottom: 6px;
+    margin-top: auto;
+  }
+
+  .card-date {
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    font-family: var(--mono);
+  }
 
   /* ---------- Footer ---------- */
   .footer-note {
@@ -241,14 +400,22 @@
     padding: 60px 0;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 900px) {
+    .indicator-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .indicator-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
     .stack-and-score { gap: 20px; }
     .bulb { width: 30px; height: 30px; }
     .score-ring { width: 96px; height: 96px; }
     .score-ring .num { font-size: 30px; }
-    .indicator-row { grid-template-columns: 1fr auto; row-gap: 6px; }
-    .ind-score { grid-column: 2; grid-row: 1; }
-    .ind-value { grid-column: 1 / -1; grid-row: 2; text-align: left; }
   }
 </style>
 </head>
@@ -326,26 +493,214 @@ function renderScoreRing(score, maxScore, colorHex) {
   `;
 }
 
-function renderIndicatorRow(key, ind) {
-  const meta = INDICATOR_META[key];
-  const hasValue = ind.value !== null && ind.value !== undefined;
-  const valueStr = hasValue ? meta.fmt(ind.value) : "—";
-  const flagged = ind.score > 0;
+function getYYYYMMDD(iso) {
+  if (!iso) return "無日期";
+  const d = new Date(iso);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const r = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${r}`;
+}
 
+function renderVixCard(ind, updatedAt) {
+  const hasVal = ind && ind.value !== null && ind.value !== undefined;
+  const val = hasVal ? ind.value : null;
+  const valStr = hasVal ? val.toFixed(2) : "—";
+  
+  let badgeText = "無資料";
+  let badgeClass = "badge-grey";
+  let valColor = "var(--ink-faint)";
+  let pct = 0;
+  
+  if (hasVal) {
+    if (val <= 20) {
+      badgeText = "正常波動";
+      badgeClass = "badge-green";
+      valColor = "var(--green)";
+    } else if (val <= 30) {
+      badgeText = "波動偏高";
+      badgeClass = "badge-yellow";
+      valColor = "var(--yellow)";
+    } else {
+      badgeText = "恐慌警戒";
+      badgeClass = "badge-red";
+      valColor = "var(--red)";
+    }
+    pct = Math.max(0, Math.min(100, ((val - 10) / 30) * 100));
+  }
+  
+  const dateStr = getYYYYMMDD(updatedAt);
+  
   return `
-    <div class="indicator-row">
-      <div>
-        <div class="ind-name">${meta.name}</div>
-        <div class="ind-threshold">${ind.threshold}</div>
+    <div class="indicator-card">
+      <div class="card-title">VIX 當前數值</div>
+      <div class="card-value-row">
+        <div class="card-value-num" style="color: ${valColor}">${valStr}</div>
+        <div class="card-badge ${badgeClass}">${badgeText}</div>
       </div>
-      <div class="ind-value">
-        ${hasValue
-          ? `<span class="val-num ${flagged ? "flag" : ""}">${valueStr}</span>`
-          : `<span class="val-unmet">無資料</span>`}
+      <div class="card-bar-container">
+        <div class="card-bar vix-bar"></div>
+        <div class="tick-line" style="left: 33.3%;"></div>
+        <div class="tick-line" style="left: 66.6%;"></div>
+        ${hasVal ? `<div class="bar-pin" style="left: ${pct}%;"></div>` : ""}
       </div>
-      <div class="ind-score ${flagged ? "flag" : "zero"}">
-        ${flagged ? "+" + ind.score : "0"}
+      <div class="card-desc">CBOE 波動率指數</div>
+      <div class="card-date">CBOE 延遲報價 · ${dateStr}</div>
+    </div>
+  `;
+}
+
+function getCnnInfo(score, rating) {
+  if (score === null || score === undefined) {
+    return { text: "無資料", clsp: "badge-grey", color: "var(--ink-faint)" };
+  }
+  let r = rating ? rating.toLowerCase() : "";
+  if (!r) {
+    if (score < 25) r = "extreme fear";
+    else if (score < 45) r = "fear";
+    else if (score < 55) r = "neutral";
+    else if (score < 75) r = "greed";
+    else r = "extreme greed";
+  }
+  if (r.includes("extreme fear")) return { text: "極度恐慌", clsp: "badge-red", color: "var(--red)" };
+  if (r.includes("fear")) return { text: "恐慌", clsp: "badge-yellow", color: "var(--yellow)" };
+  if (r.includes("extreme greed")) return { text: "極度貪婪", clsp: "badge-green", color: "var(--green)" };
+  if (r.includes("greed")) return { text: "貪婪", clsp: "badge-lightgreen", color: "var(--green)" };
+  return { text: "中性", clsp: "badge-grey", color: "var(--ink-dim)" };
+}
+
+function renderCnnCard(ind, updatedAt) {
+  const hasVal = ind && ind.value !== null && ind.value !== undefined;
+  const val = hasVal ? ind.value : null;
+  const valStr = hasVal ? val.toFixed(0) : "—";
+  
+  const info = getCnnInfo(val, ind && ind.info ? ind.info.rating : "");
+  
+  let histStr = "0-100 越低越恐慌";
+  if (ind && ind.info && ind.info.previous_1_week !== undefined && ind.info.previous_1_month !== undefined) {
+    const w = Math.round(ind.info.previous_1_week);
+    const m = Math.round(ind.info.previous_1_month);
+    histStr = `上週 ${w} ➔ 上月 ${m} ; 0-100 越低越恐慌`;
+  }
+  
+  const pct = hasVal ? Math.max(0, Math.min(100, val)) : 0;
+  const dateStr = getYYYYMMDD(updatedAt);
+  
+  return `
+    <div class="indicator-card">
+      <div class="card-title">CNN 恐慌與貪婪指數</div>
+      <div class="card-value-row">
+        <div class="card-value-num" style="color: ${info.color}">${valStr}</div>
+        <div class="card-badge ${info.clsp}">${info.text}</div>
       </div>
+      <div class="card-bar-container">
+        <div class="card-bar cnn-bar"></div>
+        <div class="tick-line" style="left: 25%;"></div>
+        <div class="tick-line" style="left: 45%;"></div>
+        <div class="tick-line" style="left: 55%;"></div>
+        <div class="tick-line" style="left: 75%;"></div>
+        ${hasVal ? `<div class="bar-pin" style="left: ${pct}%;"></div>` : ""}
+      </div>
+      <div class="card-desc">${histStr}</div>
+      <div class="card-date">CNN Business · ${dateStr}</div>
+    </div>
+  `;
+}
+
+function renderAaiiCard(ind, updatedAt) {
+  const hasInfo = ind && ind.info && ind.info.bearish !== undefined && ind.info.bearish !== null;
+  const bearishVal = hasInfo ? ind.info.bearish : (ind && ind.value !== null ? ind.value : null);
+  const bullishVal = hasInfo ? ind.info.bullish : null;
+  const neutralVal = hasInfo ? ind.info.neutral : null;
+  
+  const bearishStr = bearishVal !== null ? bearishVal.toFixed(1) + "%" : "—";
+  const bullishStr = bullishVal !== null ? bullishVal.toFixed(1) + "%" : "—";
+  const neutralStr = neutralVal !== null ? neutralVal.toFixed(1) + "%" : "—";
+  
+  let barHtml = "";
+  if (bearishVal !== null) {
+    const bull = bullishVal !== null ? bullishVal : (100 - bearishVal) * 0.6;
+    const neu = neutralVal !== null ? neutralVal : (100 - bearishVal) * 0.4;
+    const bear = bearishVal;
+    const sum = bull + neu + bear;
+    const bullPct = (bull / sum) * 100;
+    const neuPct = (neu / sum) * 100;
+    const bearPct = (bear / sum) * 100;
+    
+    barHtml = `
+      <div class="card-bar-container">
+        <div class="card-bar aaii-bar">
+          <div class="aaii-segment-bull" style="width: ${bullPct}%;"></div>
+          <div class="aaii-segment-neu" style="width: ${neuPct}%;"></div>
+          <div class="aaii-segment-bear" style="width: ${bearPct}%;"></div>
+        </div>
+        <div class="aaii-threshold-line" style="left: 55%;"></div>
+        <div class="aaii-threshold-marker" style="left: 55%;">45%</div>
+      </div>
+    `;
+  } else {
+    barHtml = `
+      <div class="card-bar-container">
+        <div class="card-bar vix-bar" style="background: var(--panel-line);"></div>
+      </div>
+    `;
+  }
+  
+  return `
+    <div class="indicator-card">
+      <div class="card-title">AAII 投資者情緒</div>
+      <div class="aaii-values">
+        <div class="aaii-val-col">
+          <div class="aaii-val-label">看漲</div>
+          <div class="aaii-val-num bull">${bullishStr}</div>
+        </div>
+        <div class="aaii-val-col">
+          <div class="aaii-val-label">中性</div>
+          <div class="aaii-val-num neu">${neutralStr}</div>
+        </div>
+        <div class="aaii-val-col">
+          <div class="aaii-val-label">看跌</div>
+          <div class="aaii-val-num bear" style="color: ${bearishVal > 45 ? "var(--red)" : "var(--ink)"}">${bearishStr}</div>
+        </div>
+      </div>
+      ${barHtml}
+      <div class="card-desc">散戶調查，看跌 > 45% 為過度悲觀</div>
+      <div class="card-date">AAII 每週四更新</div>
+    </div>
+  `;
+}
+
+function renderNaaimCard(ind, updatedAt) {
+  const hasVal = ind && ind.value !== null && ind.value !== undefined;
+  const val = hasVal ? ind.value : null;
+  const valStr = hasVal ? val.toFixed(2) : "—";
+  
+  let valColor = "var(--ink-faint)";
+  let pct = 0;
+  if (hasVal) {
+    if (val >= 55) valColor = "var(--green)";
+    else if (val >= 30) valColor = "var(--yellow)";
+    else valColor = "var(--red)";
+    pct = Math.max(0, Math.min(100, val));
+  }
+  
+  const dateStr = getYYYYMMDD(updatedAt);
+  
+  return `
+    <div class="indicator-card">
+      <div class="card-title">NAAIM 經理人持倉指數</div>
+      <div class="card-value-row">
+        <div class="card-value-num" style="color: ${valColor}">${valStr}</div>
+        ${hasVal && val < 55 ? `<div class="card-badge ${val < 30 ? "badge-red" : "badge-yellow"}">${val < 30 ? "絕對低點" : "相對低點"}</div>` : ""}
+      </div>
+      <div class="card-bar-container">
+        <div class="card-bar naaim-bar"></div>
+        <div class="tick-line" style="left: 30%;"></div>
+        <div class="tick-line" style="left: 55%;"></div>
+        ${hasVal ? `<div class="bar-pin" style="left: ${pct}%;"></div>` : ""}
+      </div>
+      <div class="card-desc">低於 55 是相對低點，低於 30 是絕對低點</div>
+      <div class="card-date">NAAIM · ${dateStr} 當週</div>
     </div>
   `;
 }
@@ -373,8 +728,6 @@ function render(data) {
   const score = data.total_score;
   const maxScore = 6; // 1(VIX) + 2(VIX) ... 實際上限抓寬一點，視覺進度條用
 
-  const indicatorKeys = ["vix", "cnn_fear_greed", "aaii_bearish", "naaim"];
-
   const html = `
     <div class="signal-panel" style="--state-color:${state.main}">
       <div class="stack-and-score">
@@ -384,8 +737,12 @@ function render(data) {
       <div class="status-label">${state.label}</div>
       <div class="status-desc">${data.status.desc}</div>
 
-      <div class="indicators">
-        ${indicatorKeys.map(k => renderIndicatorRow(k, data.indicators[k])).join("")}
+      <div class="indicators-section-title">USA 美國市場指標</div>
+      <div class="indicator-grid">
+        ${renderVixCard(data.indicators.vix, data.updated_at)}
+        ${renderCnnCard(data.indicators.cnn_fear_greed, data.updated_at)}
+        ${renderAaiiCard(data.indicators.aaii_bearish, data.updated_at)}
+        ${renderNaaimCard(data.indicators.naaim, data.updated_at)}
       </div>
 
       ${data.errors && data.errors.length > 0 ? `

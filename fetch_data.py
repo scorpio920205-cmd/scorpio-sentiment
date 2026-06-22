@@ -61,9 +61,17 @@ def fetch_cnn_fear_greed():
         r = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
         r.raise_for_status()
         data = r.json()
-        score = data["fear_and_greed"]["score"]
-        rating = data["fear_and_greed"].get("rating", "")
-        return float(score), {"rating": rating, "source": "cnn_dataviz_api"}, None
+        fg = data["fear_and_greed"]
+        score = fg["score"]
+        rating = fg.get("rating", "")
+        return float(score), {
+            "rating": rating,
+            "previous_close": fg.get("previous_close"),
+            "previous_1_week": fg.get("previous_1_week"),
+            "previous_1_month": fg.get("previous_1_month"),
+            "previous_1_year": fg.get("previous_1_year"),
+            "source": "cnn_dataviz_api"
+        }, None
     except Exception as e:
         return None, None, f"CNN Fear&Greed fetch failed: {e}"
 

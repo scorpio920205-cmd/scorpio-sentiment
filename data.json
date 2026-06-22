@@ -1,36 +1,48 @@
 {
-  "updated_at": "2026-06-19T13:30:01+00:00",
-  "total_score": 2,
+  "updated_at": "2026-06-22T09:01:20.627485+00:00",
+  "total_score": 0,
   "status": {
-    "color": "yellow",
-    "label": "注意前方",
-    "desc": "恐慌指標開始累積，留意加碼機會"
+    "color": "green",
+    "label": "市場平靜",
+    "desc": "目前未見明顯恐慌訊號"
   },
   "indicators": {
     "vix": {
-      "value": 17.7,
+      "value": 17.56,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
-      "info": { "source": "yahoo_finance_chart_api" }
+      "info": {
+        "source": "yahoo_finance_chart_api"
+      }
     },
     "cnn_fear_greed": {
-      "value": 34,
-      "score": 1,
+      "value": 37.2571428571429,
+      "score": 0,
       "threshold": "<35 +1分 / <25 +2分",
-      "info": { "rating": "fear", "source": "cnn_dataviz_api" }
+      "info": {
+        "rating": "fear",
+        "previous_close": 37.2571428571429,
+        "previous_1_week": 41.5714285714286,
+        "previous_1_month": 58.9714285714286,
+        "previous_1_year": 54.51428571428573,
+        "source": "cnn_dataviz_api"
+      }
     },
     "aaii_bearish": {
-      "value": 47.7,
-      "score": 1,
+      "value": null,
+      "score": 0,
       "threshold": ">45% +1分",
-      "info": { "bullish": 36.6, "neutral": 24.1, "bearish": 47.7, "source": "aaii_org_scrape" }
+      "info": null
     },
     "naaim": {
-      "value": 79.3,
+      "value": null,
       "score": 0,
       "threshold": "<55 +1分 / <30 +2分",
-      "info": { "source": "naaim_org_scrape" }
+      "info": null
     }
   },
-  "errors": []
+  "errors": [
+    "NAAIM fetch failed: 無法在頁面中找到 NAAIM Number，網站結構可能已變更",
+    "AAII fetch failed: 無法在頁面中找到 Bearish 百分比，網站結構可能已變更或需要 JS 渲染"
+  ]
 }
