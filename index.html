@@ -275,7 +275,7 @@
   }
 
   .naaim-bar {
-    background: var(--ink-faint);
+    background: linear-gradient(to right, rgba(231, 76, 60, 0.4) 30%, rgba(241, 196, 15, 0.4) 30% 55%, rgba(95, 101, 115, 0.2) 55%);
   }
 
   .aaii-bar {
@@ -304,11 +304,12 @@
 
   .tick-line {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: rgba(11,13,16,0.5); /* matches --bg for high contrast boundary */
-    z-index: 2;
+    top: -2px;
+    bottom: -2px;
+    width: 2px;
+    background: #000;
+    opacity: 0.6;
+    z-index: 4;
   }
 
   .aaii-threshold-line {

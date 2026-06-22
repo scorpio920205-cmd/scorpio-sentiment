@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-22T09:09:06.231756+00:00",
+  "updated_at": "2026-06-22T09:52:19.538519+00:00",
   "total_score": 0,
   "status": {
     "color": "green",
@@ -8,7 +8,7 @@
   },
   "indicators": {
     "vix": {
-      "value": 17.55,
+      "value": 17.5,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
@@ -29,18 +29,18 @@
       }
     },
     "aaii_bearish": {
-      "value": 0.0,
+      "value": 39.4,
       "score": 0,
       "threshold": ">45% +1分",
       "info": {
-        "bullish": 100.0,
-        "neutral": 0.0,
-        "bearish": 0.0,
+        "bullish": 36.6,
+        "neutral": 24.1,
+        "bearish": 39.4,
         "source": "aaii_org_scrape"
       }
     },
     "naaim": {
-      "value": 2025.0,
+      "value": 92.83,
       "score": 0,
       "threshold": "<55 +1分 / <30 +2分",
       "info": {
@@ -48,5 +48,8 @@
       }
     }
   },
-  "errors": []
+  "errors": [
+    "NAAIM fetch failed: 無法在頁面中找到 NAAIM Number，網站結構可能已變更",
+    "AAII fetch failed: 無法在頁面中找到 Bearish 百分比，網站結構可能已變更或需要 JS 渲染"
+  ]
 }

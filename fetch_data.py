@@ -194,19 +194,40 @@ def light_status(total_score):
 def main():
     errors = []
 
+    # 讀取舊資料作為抓取失敗時的備份 (fallback)
+    prev_data = {}
+    try:
+        with open("data.json", "r", encoding="utf-8") as f:
+            prev_data = json.load(f)
+    except Exception:
+        pass
+
+    def get_fallback(key, current_val, current_info):
+        if current_val is None and prev_data:
+            try:
+                prev_ind = prev_data["indicators"][key]
+                return prev_ind.get("value"), prev_ind.get("info"), True
+            except Exception:
+                pass
+        return current_val, current_info, False
+
     vix_value, vix_info, vix_err = fetch_vix()
+    vix_value, vix_info, vix_is_fallback = get_fallback("vix", vix_value, vix_info)
     if vix_err:
         errors.append(vix_err)
 
     cnn_value, cnn_info, cnn_err = fetch_cnn_fear_greed()
+    cnn_value, cnn_info, cnn_is_fallback = get_fallback("cnn_fear_greed", cnn_value, cnn_info)
     if cnn_err:
         errors.append(cnn_err)
 
     naaim_value, naaim_info, naaim_err = fetch_naaim()
+    naaim_value, naaim_info, naaim_is_fallback = get_fallback("naaim", naaim_value, naaim_info)
     if naaim_err:
         errors.append(naaim_err)
 
     aaii_value, aaii_info, aaii_err = fetch_aaii()
+    aaii_value, aaii_info, aaii_is_fallback = get_fallback("aaii_bearish", aaii_value, aaii_info)
     if aaii_err:
         errors.append(aaii_err)
 
