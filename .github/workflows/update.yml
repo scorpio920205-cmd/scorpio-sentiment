@@ -1,4 +1,4 @@
-name: Update BOS Sentiment Data
+name: Update USA Sentiment Data
 
 on:
   schedule:

@@ -1,4 +1,4 @@
-# BOS 美股情緒警示燈
+# USA 美股情緒警示燈
 
 網頁版市場情緒警示燈號工具，每日自動抓取四個情緒指標並計算警示分數。
 
@@ -22,7 +22,7 @@
 
 ### 1. 建立 GitHub repo
 
-1. 到 GitHub 建立一個新的 public repo（例如 `bos-sentiment`）
+1. 到 GitHub 建立一個新的 public repo（例如 `usa-sentiment`）
 2. 把這個資料夾裡的四個東西上傳上去（保留資料夾結構）：
    - `fetch_data.py`
    - `data.json`
@@ -34,9 +34,9 @@
 ```bash
 git init
 git add .
-git commit -m "init: BOS 美股情緒警示燈"
+git commit -m "init: USA 美股情緒警示燈"
 git branch -M main
-git remote add origin https://github.com/<你的帳號>/bos-sentiment.git
+git remote add origin https://github.com/<你的帳號>/usa-sentiment.git
 git push -u origin main
 ```
 
@@ -46,7 +46,7 @@ git push -u origin main
 2. Source 選 **Deploy from a branch**
 3. Branch 選 **main**，資料夾選 **/ (root)**
 4. 儲存後，幾分鐘內會得到一個網址，例如：
-   `https://<你的帳號>.github.io/bos-sentiment/`
+   `https://<你的帳號>.github.io/usa-sentiment/`
 
 這就是你長期使用的網址，可以加到手機主畫面或瀏覽器書籤。
 
@@ -59,7 +59,7 @@ git push -u origin main
 ### 4. 手動測試一次
 
 1. 到 repo 的 **Actions** 分頁
-2. 左側選 **Update BOS Sentiment Data**
+2. 左側選 **Update USA Sentiment Data**
 3. 點右側 **Run workflow** 手動觸發一次
 4. 跑完後檢查 repo 裡的 `data.json` 是否被更新、`Actions` 紀錄是否成功
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-BOS 美股情緒警示燈號 - 資料抓取腳本
+USA 美股情緒警示燈號 - 資料抓取腳本
 
 抓取四個市場情緒指標並依照閾值表計算總分:
   - VIX 恐慌指數          (Yahoo Finance)
