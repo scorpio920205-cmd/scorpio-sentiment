@@ -1,0 +1,36 @@
+{
+  "updated_at": "2026-06-19T13:30:01+00:00",
+  "total_score": 2,
+  "status": {
+    "color": "yellow",
+    "label": "注意前方",
+    "desc": "恐慌指標開始累積，留意加碼機會"
+  },
+  "indicators": {
+    "vix": {
+      "value": 17.7,
+      "score": 0,
+      "threshold": ">30 +1分 / >40 +2分",
+      "info": { "source": "yahoo_finance_chart_api" }
+    },
+    "cnn_fear_greed": {
+      "value": 34,
+      "score": 1,
+      "threshold": "<35 +1分 / <25 +2分",
+      "info": { "rating": "fear", "source": "cnn_dataviz_api" }
+    },
+    "aaii_bearish": {
+      "value": 47.7,
+      "score": 1,
+      "threshold": ">45% +1分",
+      "info": { "bullish": 36.6, "neutral": 24.1, "bearish": 47.7, "source": "aaii_org_scrape" }
+    },
+    "naaim": {
+      "value": 79.3,
+      "score": 0,
+      "threshold": "<55 +1分 / <30 +2分",
+      "info": { "source": "naaim_org_scrape" }
+    }
+  },
+  "errors": []
+}

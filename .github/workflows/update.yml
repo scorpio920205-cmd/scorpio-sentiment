@@ -1,0 +1,38 @@
+name: Update BOS Sentiment Data
+
+on:
+  schedule:
+    # 紐約時間開盤前約 30 分鐘 (9:00 ET)
+    # ET 在標準時間 (冬令) 是 UTC-5，夏令 (DST) 是 UTC-4
+    # 13:00 UTC 對應夏令時間紐約時間 09:00；冬令時間會變成 08:00，誤差在可接受範圍內
+    - cron: "0 13 * * 1-5"   # 週一到週五
+  workflow_dispatch: {}        # 允許手動在 GitHub 網頁上點按執行，方便測試
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run fetch script
+        run: python fetch_data.py
+
+      - name: Commit and push updated data.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet || git commit -m "chore: update sentiment data $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push

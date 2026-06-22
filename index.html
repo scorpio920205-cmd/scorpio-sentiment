@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOS 美股情緒警示燈</title>
+<style>
+  :root{
+    --bg: #0b0d10;
+    --panel: #14171c;
+    --panel-line: #232830;
+    --ink: #e8eaed;
+    --ink-dim: #8a909c;
+    --ink-faint: #565c66;
+    --green: #3ecf6e;
+    --yellow: #e8a33d;
+    --red: #e0483e;
+    --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    --sans: "Inter", -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    padding: 32px 20px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--panel-line);
+  }
+  .header .title {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  .header .title b { color: var(--ink); font-weight: 600; }
+  .header .updated {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-align: right;
+    line-height: 1.5;
+  }
+  .header .updated .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+    margin-right: 6px;
+  }
+  .header .updated .dot.live { background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+  /* ---------- Signal panel ---------- */
+  .signal-panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 18px;
+    padding: 40px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .signal-panel::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: var(--state-color, var(--ink-faint));
+    transition: background 0.6s ease;
+  }
+
+  .stack-and-score {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    margin-bottom: 22px;
+  }
+
+  /* Traffic light stack */
+  .stack {
+    background: #07080a;
+    border: 1px solid var(--panel-line);
+    border-radius: 14px;
+    padding: 14px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bulb {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: #1c2025;
+    transition: all 0.5s ease;
+  }
+  .bulb.on.red { background: var(--red); box-shadow: 0 0 22px 4px rgba(224,72,62,0.55); }
+  .bulb.on.yellow { background: var(--yellow); box-shadow: 0 0 22px 4px rgba(232,163,61,0.55); }
+  .bulb.on.green { background: var(--green); box-shadow: 0 0 22px 4px rgba(62,207,110,0.55); }
+
+  /* Score ring */
+  .score-ring {
+    position: relative;
+    width: 116px; height: 116px;
+  }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring .track { fill: none; stroke: var(--panel-line); stroke-width: 6; }
+  .score-ring .progress {
+    fill: none;
+    stroke: var(--state-color, var(--ink-faint));
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s ease, stroke 0.6s ease;
+  }
+  .score-ring .label {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .score-ring .num {
+    font-family: var(--mono);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--state-color, var(--ink));
+    line-height: 1;
+  }
+  .score-ring .unit {
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 2px;
+  }
+
+  .status-label {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--state-color, var(--ink));
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+  }
+  .status-desc {
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    text-align: center;
+    max-width: 380px;
+  }
+
+  /* ---------- Indicator rows ---------- */
+  .indicators {
+    margin-top: 28px;
+  }
+  .indicator-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 4px;
+    border-bottom: 1px solid var(--panel-line);
+  }
+  .indicator-row:last-child { border-bottom: none; }
+
+  .ind-name { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+  .ind-threshold {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    margin-top: 3px;
+  }
+
+  .ind-value {
+    font-family: var(--mono);
+    font-size: 14px;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .ind-value .val-num { color: var(--ink); font-weight: 600; }
+  .ind-value .val-num.flag { color: var(--state-color-row, var(--red)); }
+  .ind-value .val-unmet { color: var(--ink-faint); }
+
+  .ind-score {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    text-align: right;
+    min-width: 30px;
+  }
+  .ind-score.zero { color: var(--ink-faint); }
+  .ind-score.flag { color: var(--red); }
+
+  /* ---------- Footer ---------- */
+  .footer-note {
+    margin-top: 22px;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .footer-note a { color: var(--ink-dim); text-decoration: none; border-bottom: 1px solid var(--panel-line); }
+
+  .error-banner {
+    margin-top: 16px;
+    background: rgba(224,72,62,0.08);
+    border: 1px solid rgba(224,72,62,0.3);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: #f0a39d;
+    line-height: 1.6;
+  }
+  .error-banner .e-title { color: var(--red); font-weight: 700; margin-bottom: 4px; }
+
+  .loading, .fatal {
+    text-align: center;
+    color: var(--ink-faint);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 60px 0;
+  }
+
+  @media (max-width: 480px) {
+    .stack-and-score { gap: 20px; }
+    .bulb { width: 30px; height: 30px; }
+    .score-ring { width: 96px; height: 96px; }
+    .score-ring .num { font-size: 30px; }
+    .indicator-row { grid-template-columns: 1fr auto; row-gap: 6px; }
+    .ind-score { grid-column: 2; grid-row: 1; }
+    .ind-value { grid-column: 1 / -1; grid-row: 2; text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="title">🇺🇸 BOS <b>美股情緒</b> 警示燈</div>
+    <div class="updated" id="updated">
+      <span class="dot"></span><span id="updated-text">載入中…</span>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="loading">正在讀取最新資料 …</div>
+  </div>
+
+  <div class="footer-note">
+    資料來源：CBOE VIX (Yahoo Finance) · CNN Fear &amp; Greed Index · AAII Investor Sentiment Survey · NAAIM Exposure Index<br>
+    由 GitHub Actions 每日自動更新（紐約開盤前），所有閾值與評分規則可在 <code>fetch_data.py</code> 中調整。
+  </div>
+</div>
+
+<script>
+const STATE_COLORS = {
+  red:    { main: "#e0483e", label: "高度警戒" },
+  yellow: { main: "#e8a33d", label: "注意前方" },
+  green:  { main: "#3ecf6e", label: "市場平靜" },
+};
+
+const INDICATOR_META = {
+  vix:            { name: "VIX 恐慌指數",       unit: "",  fmt: v => v.toFixed(1) },
+  cnn_fear_greed: { name: "CNN 恐慌與貪婪",     unit: "分", fmt: v => v.toFixed(0) },
+  aaii_bearish:   { name: "AAII 看跌情緒",       unit: "%", fmt: v => v.toFixed(1) + "%" },
+  naaim:          { name: "NAAIM 經理人持倉",    unit: "",  fmt: v => v.toFixed(1) },
+};
+
+function timeAgo(iso) {
+  const then = new Date(iso);
+  const now = new Date();
+  const diffMin = Math.round((now - then) / 60000);
+  if (diffMin < 1) return "剛剛更新";
+  if (diffMin < 60) return `${diffMin} 分鐘前更新`;
+  const diffHr = Math.round(diffMin / 60);
+  if (diffHr < 24) return `${diffHr} 小時前更新`;
+  const diffDay = Math.round(diffHr / 24);
+  return `${diffDay} 天前更新`;
+}
+
+function renderBulbs(color) {
+  const order = ["red", "yellow", "green"];
+  return order.map(c =>
+    `<div class="bulb ${c === color ? "on " + c : ""}"></div>`
+  ).join("");
+}
+
+function renderScoreRing(score, maxScore, colorHex) {
+  const r = 52;
+  const circumference = 2 * Math.PI * r;
+  const pct = Math.min(score / maxScore, 1);
+  const offset = circumference * (1 - pct);
+  return `
+    <div class="score-ring" style="--state-color:${colorHex}">
+      <svg width="116" height="116" viewBox="0 0 116 116">
+        <circle class="track" cx="58" cy="58" r="${r}"></circle>
+        <circle class="progress" cx="58" cy="58" r="${r}"
+          stroke-dasharray="${circumference}"
+          stroke-dashoffset="${offset}"></circle>
+      </svg>
+      <div class="label">
+        <div class="num">${score}</div>
+        <div class="unit">分</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderIndicatorRow(key, ind) {
+  const meta = INDICATOR_META[key];
+  const hasValue = ind.value !== null && ind.value !== undefined;
+  const valueStr = hasValue ? meta.fmt(ind.value) : "—";
+  const flagged = ind.score > 0;
+
+  return `
+    <div class="indicator-row">
+      <div>
+        <div class="ind-name">${meta.name}</div>
+        <div class="ind-threshold">${ind.threshold}</div>
+      </div>
+      <div class="ind-value">
+        ${hasValue
+          ? `<span class="val-num ${flagged ? "flag" : ""}">${valueStr}</span>`
+          : `<span class="val-unmet">無資料</span>`}
+      </div>
+      <div class="ind-score ${flagged ? "flag" : "zero"}">
+        ${flagged ? "+" + ind.score : "0"}
+      </div>
+    </div>
+  `;
+}
+
+async function loadData() {
+  try {
+    const res = await fetch("data.json?_=" + Date.now());
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    render(data);
+  } catch (err) {
+    document.getElementById("content").innerHTML = `
+      <div class="fatal">
+        無法載入 data.json<br>
+        <span style="color:#565c66">${err.message}</span><br><br>
+        請確認 GitHub Actions 是否已成功執行過一次，產生 data.json。
+      </div>`;
+    document.getElementById("updated-text").textContent = "載入失敗";
+  }
+}
+
+function render(data) {
+  const colorKey = data.status.color;
+  const state = STATE_COLORS[colorKey];
+  const score = data.total_score;
+  const maxScore = 6; // 1(VIX) + 2(VIX) ... 實際上限抓寬一點，視覺進度條用
+
+  const indicatorKeys = ["vix", "cnn_fear_greed", "aaii_bearish", "naaim"];
+
+  const html = `
+    <div class="signal-panel" style="--state-color:${state.main}">
+      <div class="stack-and-score">
+        <div class="stack">${renderBulbs(colorKey)}</div>
+        ${renderScoreRing(score, maxScore, state.main)}
+      </div>
+      <div class="status-label">${state.label}</div>
+      <div class="status-desc">${data.status.desc}</div>
+
+      <div class="indicators">
+        ${indicatorKeys.map(k => renderIndicatorRow(k, data.indicators[k])).join("")}
+      </div>
+
+      ${data.errors && data.errors.length > 0 ? `
+        <div class="error-banner">
+          <div class="e-title">⚠ ${data.errors.length} 個資料來源抓取失敗</div>
+          ${data.errors.map(e => `· ${escapeHtml(e)}`).join("<br>")}
+        </div>
+      ` : ""}
+    </div>
+  `;
+
+  document.getElementById("content").innerHTML = html;
+
+  const dot = document.querySelector(".updated .dot");
+  dot.className = "dot" + (data.errors.length === 0 ? " live" : "");
+  document.getElementById("updated-text").textContent = timeAgo(data.updated_at);
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+loadData();
+</script>
+
+</body>
+</html>
