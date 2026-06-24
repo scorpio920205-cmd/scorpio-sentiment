@@ -503,6 +503,35 @@ function getYYYYMMDD(iso) {
   return `${y}-${m}-${r}`;
 }
 
+function getVixColor(val) {
+  if (val === null || val === undefined) return "var(--ink-dim)";
+  const stops = [
+    { val: 15, r: 46, g: 204, b: 113 },   // var(--green)
+    { val: 25, r: 241, g: 196, b: 15 },   // var(--yellow)
+    { val: 35, r: 231, g: 76, b: 60 }     // var(--red)
+  ];
+  
+  let lower = stops[0];
+  let upper = stops[stops.length - 1];
+  
+  if (val <= lower.val) return `rgb(${lower.r}, ${lower.g}, ${lower.b})`;
+  if (val >= upper.val) return `rgb(${upper.r}, ${upper.g}, ${upper.b})`;
+  
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (val >= stops[i].val && val <= stops[i+1].val) {
+      lower = stops[i];
+      upper = stops[i+1];
+      break;
+    }
+  }
+  
+  const pct = (val - lower.val) / (upper.val - lower.val);
+  const r = Math.round(lower.r + (upper.r - lower.r) * pct);
+  const g = Math.round(lower.g + (upper.g - lower.g) * pct);
+  const b = Math.round(lower.b + (upper.b - lower.b) * pct);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
 function renderVixCard(ind, updatedAt) {
   const hasVal = ind && ind.value !== null && ind.value !== undefined;
   const val = hasVal ? ind.value : null;
@@ -510,33 +539,30 @@ function renderVixCard(ind, updatedAt) {
   
   let badgeText = "無資料";
   let badgeClass = "badge-grey";
-  let valColor = "var(--ink-faint)";
   let pct = 0;
   
   if (hasVal) {
     if (val <= 20) {
       badgeText = "正常波動";
       badgeClass = "badge-green";
-      valColor = "var(--green)";
     } else if (val <= 30) {
       badgeText = "波動偏高";
       badgeClass = "badge-yellow";
-      valColor = "var(--yellow)";
     } else {
       badgeText = "恐慌警戒";
       badgeClass = "badge-red";
-      valColor = "var(--red)";
     }
     pct = Math.max(0, Math.min(100, ((val - 10) / 30) * 100));
   }
   
+  const numColor = hasVal ? getVixColor(val) : "var(--ink-faint)";
   const dateStr = getYYYYMMDD(updatedAt);
   
   return `
     <div class="indicator-card">
       <div class="card-title">VIX 當前數值</div>
       <div class="card-value-row">
-        <div class="card-value-num" style="color: ${valColor}">${valStr}</div>
+        <div class="card-value-num" style="color: ${numColor}">${valStr}</div>
         <div class="card-badge ${badgeClass}">${badgeText}</div>
       </div>
       <div class="card-bar-container">
