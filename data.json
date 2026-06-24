@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-24T01:39:04.424758+00:00",
+  "updated_at": "2026-06-24T15:28:09.381239+00:00",
   "total_score": 1,
   "status": {
     "color": "green",
@@ -8,7 +8,7 @@
   },
   "indicators": {
     "vix": {
-      "value": 19.49,
+      "value": 18.4,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
@@ -16,15 +16,15 @@
       }
     },
     "cnn_fear_greed": {
-      "value": 27.5428571428571,
+      "value": 28.1428571428571,
       "score": 1,
       "threshold": "<35 +1分 / <25 +2分",
       "info": {
         "rating": "fear",
-        "previous_close": 34.7428571428571,
-        "previous_1_week": 39.0857142857143,
+        "previous_close": 27.5428571428571,
+        "previous_1_week": 32.2,
         "previous_1_month": 58.9714285714286,
-        "previous_1_year": 56.60000000000001,
+        "previous_1_year": 57.885714285714286,
         "source": "cnn_dataviz_api"
       }
     },
@@ -49,5 +49,7 @@
       }
     }
   },
-  "errors": []
+  "errors": [
+    "NAAIM fetch failed: 403 Client Error: Forbidden for url: https://www.macromicro.me/charts/46198/naaim-exposure-index"
+  ]
 }
