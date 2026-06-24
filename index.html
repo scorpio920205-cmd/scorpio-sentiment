@@ -551,6 +551,39 @@ function renderVixCard(ind, updatedAt) {
   `;
 }
 
+function getCnnColor(score) {
+  if (score === null || score === undefined) return "var(--ink-dim)";
+  const stops = [
+    { val: 0, r: 231, g: 76, b: 60 },      // var(--red)
+    { val: 25, r: 231, g: 76, b: 60 },
+    { val: 45, r: 241, g: 196, b: 15 },    // var(--yellow)
+    { val: 50, r: 158, g: 164, b: 176 },   // var(--ink-dim)
+    { val: 55, r: 140, g: 230, b: 140 },   // #8ce68c
+    { val: 75, r: 46, g: 204, b: 113 },    // var(--green)
+    { val: 100, r: 46, g: 204, b: 113 }
+  ];
+  
+  let lower = stops[0];
+  let upper = stops[stops.length - 1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (score >= stops[i].val && score <= stops[i+1].val) {
+      lower = stops[i];
+      upper = stops[i+1];
+      break;
+    }
+  }
+  
+  if (lower.val === upper.val) {
+    return `rgb(${lower.r}, ${lower.g}, ${lower.b})`;
+  }
+  
+  const pct = (score - lower.val) / (upper.val - lower.val);
+  const r = Math.round(lower.r + (upper.r - lower.r) * pct);
+  const g = Math.round(lower.g + (upper.g - lower.g) * pct);
+  const b = Math.round(lower.b + (upper.b - lower.b) * pct);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
 function getCnnInfo(score, rating) {
   if (score === null || score === undefined) {
     return { text: "無資料", clsp: "badge-grey", color: "var(--ink-faint)" };
@@ -576,6 +609,7 @@ function renderCnnCard(ind, updatedAt) {
   const valStr = hasVal ? val.toFixed(0) : "—";
   
   const info = getCnnInfo(val, ind && ind.info ? ind.info.rating : "");
+  const numColor = hasVal ? getCnnColor(val) : "var(--ink-dim)";
   
   let histStr = "0-100 越低越恐慌";
   if (ind && ind.info && ind.info.previous_1_week !== undefined && ind.info.previous_1_month !== undefined) {
@@ -591,7 +625,7 @@ function renderCnnCard(ind, updatedAt) {
     <div class="indicator-card">
       <div class="card-title">CNN 恐慌與貪婪指數</div>
       <div class="card-value-row">
-        <div class="card-value-num" style="color: ${info.color}">${valStr}</div>
+        <div class="card-value-num" style="color: ${numColor}">${valStr}</div>
         <div class="card-badge ${info.clsp}">${info.text}</div>
       </div>
       <div class="card-bar-container">
