@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-23T15:42:26.800318+00:00",
+  "updated_at": "2026-06-24T01:26:17.900865+00:00",
   "total_score": 1,
   "status": {
     "color": "green",
@@ -8,7 +8,7 @@
   },
   "indicators": {
     "vix": {
-      "value": 19.73,
+      "value": 19.49,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
@@ -16,7 +16,7 @@
       }
     },
     "cnn_fear_greed": {
-      "value": 27.6571428571429,
+      "value": 27.5428571428571,
       "score": 1,
       "threshold": "<35 +1分 / <25 +2分",
       "info": {
