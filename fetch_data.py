@@ -78,27 +78,34 @@ def fetch_cnn_fear_greed():
 
 def fetch_naaim():
     """
-    從 NAAIM 公開頁面解析最新一期 NAAIM Exposure Index 數值。
-    NAAIM 沒有公開 API，頁面結構若改版需要調整這裡的解析邏輯。
+    從 MacroMicro 取得最新一期 NAAIM Exposure Index 數值。
     """
-    url = "https://www.naaim.org/programs/naaim-exposure-index/"
+    url = "https://www.macromicro.me/charts/46198/naaim-exposure-index"
     try:
         r = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
         r.raise_for_status()
         html = r.text
 
-        # NAAIM 頁面上數值通常以類似 "NAAIM Number: 79.30" 或表格形式出現。
-        # 這裡用較寬鬆的正規表示式抓「NAAIM Number」附近的數字，
-        # 若改版失敗，會在 error 欄位中明確標示，方便之後手動修正。
-        m = re.search(r"NAAIM\s*Number[^0-9\-]*(-?\d+\.?\d*)", html, re.IGNORECASE)
+        # 匹配 series_last_rows 的資料
+        m = re.search(r'"series_last_rows"\s*:\s*"(.*?)"\s*,\s*"count_viewed"', html)
         if not m:
-            # 備用模式：抓頁面上第一個獨立的浮點數（在表格 cell 內）
-            m = re.search(r'class="[^"]*naaim[^"]*"[^>]*>\s*(-?\d+\.?\d*)', html, re.IGNORECASE)
-        if not m:
-            raise ValueError("無法在頁面中找到 NAAIM Number，網站結構可能已變更")
+            raise ValueError("無法在 MacroMicro 頁面中找到 series_last_rows 數據")
 
-        value = float(m.group(1))
-        return value, {"source": "naaim_org_scrape"}, None
+        escaped_val = m.group(1)
+        # unescape 兩層 json string
+        outer_json = '"' + escaped_val + '"'
+        unescaped = json.loads(outer_json)
+        data = json.loads(unescaped)
+        
+        # 第一個 series (NAAIM Exposure Index) 的最後一個數據點
+        last_point = data[0][-1]
+        value = float(last_point[1])
+        date_str = last_point[0]
+        
+        return value, {
+            "date": date_str,
+            "source": "macromicro_naaim_index_scrape"
+        }, None
     except Exception as e:
         return None, None, f"NAAIM fetch failed: {e}"
 
@@ -106,7 +113,6 @@ def fetch_naaim():
 def fetch_aaii():
     """
     從 AAII 公開頁面解析最新一週的看漲/中性/看跌百分比。
-    AAII 完整歷史數據為會員付費內容，這裡只抓首頁公開顯示的最新數字。
     """
     url = "https://www.aaii.com/sentimentsurvey"
     try:
@@ -114,13 +120,13 @@ def fetch_aaii():
         r.raise_for_status()
         html = r.text
 
-        # AAII 頁面慣常以 "Bullish 36.6%" / "Bearish 39.4%" 之類文字呈現。
-        bullish_m = re.search(r"Bullish[^0-9]{0,20}(\d+\.?\d*)\s*%", html, re.IGNORECASE)
-        bearish_m = re.search(r"Bearish[^0-9]{0,20}(\d+\.?\d*)\s*%", html, re.IGNORECASE)
-        neutral_m = re.search(r"Neutral[^0-9]{0,20}(\d+\.?\d*)\s*%", html, re.IGNORECASE)
+        # 匹配頁面上的 HTML 條形圖元素 (避免抓到 Akamai 等 dummy 測試變數)
+        bullish_m = re.search(r'class="[^"]*bar\s+bullish[^"]*"[^>]*>\s*(\d+\.?\d*)\s*%', html, re.IGNORECASE)
+        bearish_m = re.search(r'class="[^"]*bar\s+bearish[^"]*"[^>]*>\s*(\d+\.?\d*)\s*%', html, re.IGNORECASE)
+        neutral_m = re.search(r'class="[^"]*bar\s+neutral[^"]*"[^>]*>\s*(\d+\.?\d*)\s*%', html, re.IGNORECASE)
 
         if not bearish_m:
-            raise ValueError("無法在頁面中找到 Bearish 百分比，網站結構可能已變更或需要 JS 渲染")
+            raise ValueError("無法在頁面中找到 Bearish 百分比，網站結構可能已變更")
 
         bearish = float(bearish_m.group(1))
         bullish = float(bullish_m.group(1)) if bullish_m else None
