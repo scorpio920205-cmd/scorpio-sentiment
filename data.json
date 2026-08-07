@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-06T15:02:59.130210+00:00",
+  "updated_at": "2026-08-07T14:02:31.299938+00:00",
   "total_score": 0,
   "status": {
     "color": "green",
@@ -8,7 +8,7 @@
   },
   "indicators": {
     "vix": {
-      "value": 15.51,
+      "value": 15.1,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
@@ -16,15 +16,15 @@
       }
     },
     "cnn_fear_greed": {
-      "value": 62.0571428571429,
+      "value": 64.4285714285714,
       "score": 0,
       "threshold": "<35 +1分 / <25 +2分",
       "info": {
         "rating": "greed",
-        "previous_close": 59.6571428571429,
-        "previous_1_week": 40.7142857142857,
-        "previous_1_month": 41.65714285714286,
-        "previous_1_year": 55.314285714285724,
+        "previous_close": 59.7142857142857,
+        "previous_1_week": 45.2285714285714,
+        "previous_1_month": 39.771428571428565,
+        "previous_1_year": 54.71428571428572,
         "source": "cnn_dataviz_api"
       }
     },
