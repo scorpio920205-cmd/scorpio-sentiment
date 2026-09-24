@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-23T17:30:42.033144+00:00",
+  "updated_at": "2026-09-24T17:35:38.694194+00:00",
   "total_score": 1,
   "status": {
     "color": "green",
@@ -8,7 +8,7 @@
   },
   "indicators": {
     "vix": {
-      "value": 15.41,
+      "value": 15.62,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
@@ -16,26 +16,26 @@
       }
     },
     "cnn_fear_greed": {
-      "value": 35.2,
+      "value": 35.1428571428571,
       "score": 0,
       "threshold": "<35 +1分 / <25 +2分",
       "info": {
         "rating": "fear",
-        "previous_close": 35.2285714285714,
-        "previous_1_week": 27.3142857142857,
-        "previous_1_month": 54.65714285714286,
-        "previous_1_year": 56.771428571428565,
+        "previous_close": 34.6857142857143,
+        "previous_1_week": 28.2857142857143,
+        "previous_1_month": 54.97142857142858,
+        "previous_1_year": 54.57142857142857,
         "source": "cnn_dataviz_api"
       }
     },
     "aaii_bearish": {
-      "value": 53.3,
+      "value": 48.1,
       "score": 1,
       "threshold": ">45% +1分",
       "info": {
-        "bullish": 28.8,
-        "neutral": 17.9,
-        "bearish": 53.3,
+        "bullish": 32.7,
+        "neutral": 19.2,
+        "bearish": 48.1,
         "source": "aaii_org_scrape"
       }
     },
