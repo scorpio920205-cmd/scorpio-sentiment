@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-13T19:35:05.380659+00:00",
-  "total_score": 0,
+  "updated_at": "2026-10-14T17:38:39.015762+00:00",
+  "total_score": 1,
   "status": {
     "color": "green",
     "label": "市場平靜",
@@ -8,7 +8,7 @@
   },
   "indicators": {
     "vix": {
-      "value": 15.44,
+      "value": 16.74,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
@@ -16,15 +16,15 @@
       }
     },
     "cnn_fear_greed": {
-      "value": 45.1428571428571,
-      "score": 0,
+      "value": 33.3142857142857,
+      "score": 1,
       "threshold": "<35 +1分 / <25 +2分",
       "info": {
-        "rating": "neutral",
-        "previous_close": 45.7428571428571,
-        "previous_1_week": 46.8,
-        "previous_1_month": 32.6857142857143,
-        "previous_1_year": 29.74285714285714,
+        "rating": "fear",
+        "previous_close": 44.7428571428571,
+        "previous_1_week": 42.1428571428571,
+        "previous_1_month": 30.9714285714286,
+        "previous_1_year": 28.285714285714285,
         "source": "cnn_dataviz_api"
       }
     },
