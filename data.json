@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-10-15T17:24:40.659690+00:00",
-  "total_score": 1,
+  "updated_at": "2026-10-16T17:00:55.157601+00:00",
+  "total_score": 2,
   "status": {
-    "color": "green",
-    "label": "市場平靜",
-    "desc": "目前未見明顯恐慌訊號"
+    "color": "yellow",
+    "label": "注意前方",
+    "desc": "恐慌指標開始累積，留意加碼機會"
   },
   "indicators": {
     "vix": {
-      "value": 16.83,
+      "value": 17.72,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
@@ -16,15 +16,15 @@
       }
     },
     "cnn_fear_greed": {
-      "value": 29.8643990929705,
-      "score": 1,
+      "value": 22.6934240362812,
+      "score": 2,
       "threshold": "<35 +1分 / <25 +2分",
       "info": {
-        "rating": "fear",
-        "previous_close": 32.3345622119816,
-        "previous_1_week": 39.8,
-        "previous_1_month": 27.9714285714286,
-        "previous_1_year": 27.41428571428571,
+        "rating": "extreme fear",
+        "previous_close": 31.5428571428571,
+        "previous_1_week": 46.4857142857143,
+        "previous_1_month": 27.3142857142857,
+        "previous_1_year": 23.114285714285717,
         "source": "cnn_dataviz_api"
       }
     },
