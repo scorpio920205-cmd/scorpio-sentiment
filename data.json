@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-10-23T17:31:12.639207+00:00",
-  "total_score": 3,
+  "updated_at": "2026-10-26T18:53:44.296497+00:00",
+  "total_score": 2,
   "status": {
-    "color": "red",
-    "label": "高度警戒",
-    "desc": "多項恐慌指標同時觸發，留意風險"
+    "color": "yellow",
+    "label": "注意前方",
+    "desc": "恐慌指標開始累積，留意加碼機會"
   },
   "indicators": {
     "vix": {
-      "value": 20.38,
+      "value": 18.4,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
@@ -16,15 +16,15 @@
       }
     },
     "cnn_fear_greed": {
-      "value": 19.617316017316,
-      "score": 2,
+      "value": 27.1074626865672,
+      "score": 1,
       "threshold": "<35 +1分 / <25 +2分",
       "info": {
-        "rating": "extreme fear",
-        "previous_close": 19.8131868131868,
-        "previous_1_week": 22.0732142857143,
-        "previous_1_month": 32.5428571428571,
-        "previous_1_year": 27.571428571428573,
+        "rating": "fear",
+        "previous_close": 20.9809523809524,
+        "previous_1_week": 20.8043956043956,
+        "previous_1_month": 36.9428571428571,
+        "previous_1_year": 32.45714285714286,
         "source": "cnn_dataviz_api"
       }
     },
