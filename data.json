@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-11-25T22:00:54.393110+00:00",
-  "total_score": 2,
+  "updated_at": "2026-11-26T21:59:17.148549+00:00",
+  "total_score": 3,
   "status": {
-    "color": "yellow",
-    "label": "注意前方",
-    "desc": "恐慌指標開始累積，留意加碼機會"
+    "color": "red",
+    "label": "高度警戒",
+    "desc": "多項恐慌指標同時觸發，留意風險"
   },
   "indicators": {
     "vix": {
-      "value": 28.29,
+      "value": 26.8,
       "score": 0,
       "threshold": ">30 +1分 / >40 +2分",
       "info": {
@@ -16,26 +16,26 @@
       }
     },
     "cnn_fear_greed": {
-      "value": 15.2253164556962,
+      "value": 14.9967450271248,
       "score": 2,
       "threshold": "<35 +1分 / <25 +2分",
       "info": {
         "rating": "extreme fear",
-        "previous_close": 17.4212454212454,
-        "previous_1_week": 29.8857142857143,
-        "previous_1_month": 16.685714285714287,
-        "previous_1_year": 15.028571428571428,
+        "previous_close": 15.2253164556962,
+        "previous_1_week": 15.8676691729323,
+        "previous_1_month": 29.8285714285714,
+        "previous_1_year": 17.657142857142862,
         "source": "cnn_dataviz_api"
       }
     },
     "aaii_bearish": {
-      "value": 42.2,
-      "score": 0,
+      "value": 45.4,
+      "score": 1,
       "threshold": ">45% +1分",
       "info": {
-        "bullish": 33.3,
-        "neutral": 24.4,
-        "bearish": 42.2,
+        "bullish": 37.1,
+        "neutral": 17.5,
+        "bearish": 45.4,
         "source": "aaii_org_scrape"
       }
     },
